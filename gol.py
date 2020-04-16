@@ -15,11 +15,19 @@ grid = [[False] * WIDTH for x in range(HEIGHT)]
 
 
 def game_of_life(grid):
+    """
+    grid: 2D list countaining boolean values
+            True represent a live cell
+            False represent a dead cell
+    return: grid after 1 tick
+    """
     temp = []
 
     for y in range(len(grid)):
         for x in range(len(grid[y])):
-            neighbor = [
+
+            # Get every neighbors without leaving the grid
+            neighbors = [
                 grid[m][n] 
                 for n in range(
                     max(x-1, 0),
@@ -30,19 +38,20 @@ def game_of_life(grid):
                     min(y+2, len(grid))
                 )
             ]
-            neighbor_count = neighbor.count(True) - (1 if grid[y][x] else 0)
 
-            if grid[y][x] and neighbor_count < 2 or neighbor_count > 3:
-                # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-                # Any live cell with more than three live neighbours dies, as if by overpopulation.
+            # Count alive neighbors
+            neighbors_count = neighbors.count(True) - (1 if grid[y][x] else 0)
+
+            # Apply Conway's Game of Life rules to determine births and deaths
+            if grid[y][x] and neighbors_count < 2 or neighbors_count > 3:
+                # Any live cell with fewer than two live neighbours or 
+                # with more than three live neighbours dies.
                 temp.append([y, x, False])
-            elif not grid[y][x] and neighbor_count == 3:
-                # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+            elif not grid[y][x] and neighbors_count == 3:
+                # Any dead cell with exactly three live neighbours becomes a live cell.
                 temp.append([y, x, True])
-
-    for cell in temp:
-        print( cell[0], cell[1], grid[cell[0]][cell[1]], cell[2])
     
+    # Apply transformations to the grid so that births and deaths occur simultaneously
     for cell in temp:
         grid[cell[0]][cell[1]] = cell[2]
 
@@ -66,7 +75,6 @@ if x == 0:
     grid[1][2] = True
     grid[1][3] = True
     grid[1][4] = True
-
 elif x == 1:
     # Glider
     grid[1][2] = True
@@ -79,5 +87,5 @@ elif x == 1:
 while True:
     print_grid(grid)
     grid = game_of_life(grid)
-    time.sleep(110.2)
+    time.sleep(0.2)
     os.system('cls')
