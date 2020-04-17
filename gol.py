@@ -108,11 +108,11 @@ class GameOfLifeGUI():
         self.grid[3][3] = True
 
     def load_pulsar(self):
-        import pulsar
+        from saves import pulsar
         self.load_from_grid(pulsar.DATA)
 
     def load_gospers_glider_gun(self):
-        import gospers_glider_gun
+        from saves import gospers_glider_gun 
         self.load_from_grid(gospers_glider_gun.DATA)
 
     def load_from_grid(self, grid_to_load):
