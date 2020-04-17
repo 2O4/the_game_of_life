@@ -153,5 +153,5 @@ class GameOfLifeGUI():
 
 if __name__ == "__main__":
     gui_gol = GameOfLifeGUI(width=120, height=30)
-    gui_gol.load_gospers_glider_gun()
+    #gui_gol.load_gospers_glider_gun()
     gui_gol.gui_loop()
