@@ -6,16 +6,13 @@
 
 import time
 import os
-
-
-WIDTH = 20
-HEIGHT = 10
-
-grid = [[False] * WIDTH for x in range(HEIGHT)]
+import pygame
 
 
 def game_of_life(grid):
     """
+    Conway's Game of Life Python algortihm
+
     grid: 2D list countaining boolean values
             True represent a live cell
             False represent a dead cell
@@ -23,20 +20,17 @@ def game_of_life(grid):
     """
     temp = []
 
-    for y in range(len(grid)):
-        for x in range(len(grid[y])):
+    width = len(grid[0])
+    height = len(grid)
 
-            # Get every neighbors without leaving the grid
+    for y in range(height):
+        for x in range(width):
+
+            # Get every neighbors
             neighbors = [
                 grid[m][n] 
-                for n in range(
-                    max(x-1, 0),
-                    min(x+2, len(grid[y]))
-                ) 
-                for m in range(
-                    max(y-1, 0),
-                    min(y+2, len(grid))
-                )
+                for n in [x-1, x, (x+1)%width]
+                for m in [y-1, y, (y+1)%height]
             ]
 
             # Count alive neighbors
@@ -68,24 +62,94 @@ def print_grid(grid):
         print()
 
 
-x = 1
+class GameOfLifeGUI():
+    def __init__(self, width=12, height=8):
+        # ALGORITHM
+        self.width = width
+        self.height = height
+        self.grid = [
+            [False for x in range(self.width)]
+            for x in range(self.height)
+        ]
 
-if x == 0:
-    # Blinker
-    grid[1][2] = True
-    grid[1][3] = True
-    grid[1][4] = True
-elif x == 1:
-    # Glider
-    grid[1][2] = True
-    grid[2][3] = True
-    grid[3][1] = True
-    grid[3][2] = True
-    grid[3][3] = True
+        self.physicsUpdateFrameRate = 5
+
+        # GUI/PYGAME
+        self.tileSize = 16
+        self.windowWidth = self.width * self.tileSize
+        self.windowHeight = self.height * self.tileSize
+        self.windowSize = (self.windowWidth, self.windowHeight)
+        self.window = pygame.display.set_mode(self.windowSize, 0, 32)
+        self.clock = pygame.time.Clock()
+        pygame.display.set_caption("Conway's Game of Life")
+        # GUI COLORS
+        self.liveTileColor = (15, 15, 15)
+        self.deadTileColor = (250, 250, 250)
+
+        self.loadGlider()
+
+    def gui_loop(self):
+        pygame.init()
+        currentPhysicFrame = 0
+        while True:
+            pygame.display.update()
+            self.clock.tick(30)
+            if currentPhysicFrame == 0:
+                game_of_life(self.grid)
+                self.display_tiles()
+            currentPhysicFrame = (currentPhysicFrame + 1) % self.physicsUpdateFrameRate
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        pass
+
+    def loadGlider(self):
+        self.grid[1][2] = True
+        self.grid[2][3] = True
+        self.grid[3][1] = True
+        self.grid[3][2] = True
+        self.grid[3][3] = True
+
+    def loadPulsar(self):
+        pass
+
+    def loadGospersGliderGun(self):
+        pass
+
+    def loadPufferTrain(self):
+        pass
+
+    def tilePosition(self, x, y):
+        """
+        convert a grid position into gui position of a tile
+        """
+        gui_x = self.tileSize * x
+        gui_y = self.tileSize * y
+        return gui_x, gui_y
+
+    def display_tiles(self):
+        """
+        Update the display of every tiles on the grid
+        """
+        for x in range(self.width):
+            for y in range(self.height):
+                self.display_one_tile(x, y)
+
+    def display_one_tile(self, x, y):
+        """
+        Update the display of a single tile on the grid
+        """
+        self.window.fill(
+            [self.liveTileColor if self.grid[y][x] else self.deadTileColor][0],
+            pygame.Rect((
+                self.tilePosition(x, y),
+                (self.tileSize, self.tileSize)
+            ))
+        )
 
 
-while True:
-    print_grid(grid)
-    grid = game_of_life(grid)
-    time.sleep(0.2)
-    os.system('cls')
+GameOfLifeGUI().gui_loop()
