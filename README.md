@@ -9,4 +9,4 @@
 ## Controles
 
 - SPACE: pause
-- Right Click: change cell state
+- Left Click: change cell state
