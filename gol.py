@@ -63,7 +63,7 @@ def print_grid(grid):
 
 
 class GameOfLifeGUI():
-    def __init__(self, width=12, height=8):
+    def __init__(self, width=30, height=20):
         # ALGORITHM
         self.width = width
         self.height = height
@@ -72,10 +72,10 @@ class GameOfLifeGUI():
             for x in range(self.height)
         ]
 
-        self.physicsUpdateFrameRate = 5
+        self.physicsUpdateFrameRate = 3
 
         # GUI/PYGAME
-        self.tileSize = 16
+        self.tileSize = 8
         self.windowWidth = self.width * self.tileSize
         self.windowHeight = self.height * self.tileSize
         self.windowSize = (self.windowWidth, self.windowHeight)
@@ -91,10 +91,11 @@ class GameOfLifeGUI():
     def gui_loop(self):
         pygame.init()
         currentPhysicFrame = 0
+        pause = False
         while True:
             pygame.display.update()
             self.clock.tick(30)
-            if currentPhysicFrame == 0:
+            if currentPhysicFrame == 0 and not pause:
                 game_of_life(self.grid)
                 self.display_tiles()
             currentPhysicFrame = (currentPhysicFrame + 1) % self.physicsUpdateFrameRate
@@ -102,10 +103,16 @@ class GameOfLifeGUI():
                 if event.type == pygame.QUIT:
                     quit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    pos = pygame.mouse.get_pos()
+                    self.onClick(pygame.mouse.get_pos())
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        pass
+                    if event.key == pygame.K_SPACE:
+                        pause = not pause
+
+    def onClick(self, pos):
+        x = int(pos[0] / self.tileSize)
+        y = int(pos[1] / self.tileSize)
+        self.grid[y][x] = not self.grid[y][x]
+        self.display_one_tile(x, y)
 
     def loadGlider(self):
         self.grid[1][2] = True
