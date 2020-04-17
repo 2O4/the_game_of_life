@@ -4,8 +4,6 @@
 # Python integration by 2O4
 #
 
-import time
-import os
 import pygame
 
 
@@ -52,18 +50,8 @@ def game_of_life(grid):
     return grid
 
 
-def print_grid(grid):
-    for x in grid:
-        for y in x:
-            if y:
-                print(end='O ')
-            else:
-                print(end='. ')
-        print()
-
-
 class GameOfLifeGUI():
-    def __init__(self, width=30, height=20):
+    def __init__(self, width=60, height=18):
         # ALGORITHM
         self.width = width
         self.height = height
@@ -75,7 +63,7 @@ class GameOfLifeGUI():
         self.physicsUpdateFrameRate = 3
 
         # GUI/PYGAME
-        self.tileSize = 8
+        self.tileSize = 6
         self.windowWidth = self.width * self.tileSize
         self.windowHeight = self.height * self.tileSize
         self.windowSize = (self.windowWidth, self.windowHeight)
@@ -85,8 +73,6 @@ class GameOfLifeGUI():
         # GUI COLORS
         self.liveTileColor = (15, 15, 15)
         self.deadTileColor = (250, 250, 250)
-
-        self.loadGlider()
 
     def gui_loop(self):
         pygame.init()
@@ -114,23 +100,29 @@ class GameOfLifeGUI():
         self.grid[y][x] = not self.grid[y][x]
         self.display_one_tile(x, y)
 
-    def loadGlider(self):
+    def load_glider(self):
         self.grid[1][2] = True
         self.grid[2][3] = True
         self.grid[3][1] = True
         self.grid[3][2] = True
         self.grid[3][3] = True
 
-    def loadPulsar(self):
-        pass
+    def load_pulsar(self):
+        import pulsar
+        self.load_from_grid(pulsar.DATA)
 
-    def loadGospersGliderGun(self):
-        pass
+    def load_gospers_glider_gun(self):
+        import gospers_glider_gun
+        self.load_from_grid(gospers_glider_gun.DATA)
 
-    def loadPufferTrain(self):
-        pass
+    def load_from_grid(self, grid_to_load):
+        h = len(grid_to_load)
+        l = len(grid_to_load[0])
+        for x in range(h):
+            for y in range(l):
+                self.grid[x][y] = grid_to_load[x][y]
 
-    def tilePosition(self, x, y):
+    def tile_position(self, x, y):
         """
         convert a grid position into gui position of a tile
         """
@@ -153,10 +145,13 @@ class GameOfLifeGUI():
         self.window.fill(
             [self.liveTileColor if self.grid[y][x] else self.deadTileColor][0],
             pygame.Rect((
-                self.tilePosition(x, y),
+                self.tile_position(x, y),
                 (self.tileSize, self.tileSize)
             ))
         )
 
 
-GameOfLifeGUI().gui_loop()
+if __name__ == "__main__":
+    gui_gol = GameOfLifeGUI(width=120, height=30)
+    gui_gol.load_gospers_glider_gun()
+    gui_gol.gui_loop()
