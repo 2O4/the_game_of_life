@@ -5,6 +5,7 @@
 #
 
 import pygame
+from random import getrandbits
 
 
 def game_of_life(grid):
@@ -122,6 +123,14 @@ class GameOfLifeGUI():
             for y in range(l):
                 self.grid[x][y] = grid_to_load[x][y]
 
+    def load_random(self):
+        """
+        Fill the grid with random live cells
+        """
+        for x in range(self.height):
+            for y in range(self.width):
+                self.grid[x][y] = bool(getrandbits(1))
+
     def tile_position(self, x, y):
         """
         convert a grid position into gui position of a tile
@@ -152,6 +161,6 @@ class GameOfLifeGUI():
 
 
 if __name__ == "__main__":
-    gui_gol = GameOfLifeGUI(width=120, height=30)
-    gui_gol.load_gospers_glider_gun()
+    gui_gol = GameOfLifeGUI(width=120, height=100)
+    gui_gol.load_random()
     gui_gol.gui_loop()

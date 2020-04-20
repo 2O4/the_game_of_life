@@ -6,6 +6,8 @@
 
 ![draw](preview/draw.gif)
 
+![random](preview/random.gif)
+
 ## Controles
 
 - SPACE: pause
