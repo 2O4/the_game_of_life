@@ -12,10 +12,13 @@
 ## Preview
 
 [Gospers glider gun](https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Examples_of_patterns) pre-generated grid:
+
 ![gospers_glider_gun](preview/gospers_glider_gun.gif)
 
 Drawing, changing cell state (using right click):
+
 ![draw](preview/draw.gif)
 
 Randomly generated grid:
+
 ![random](preview/random.gif)
